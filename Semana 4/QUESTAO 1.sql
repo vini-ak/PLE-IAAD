@@ -76,11 +76,11 @@ insert into USUARIO values
 insert into LIVRO values
 	('09xe3', 'Cinco minutos', 'Saraiva'),
 	('er342', 'Dom Casmurro', 'Globo'),
-	('1wks2', 'A Moreninha', 'Pearson');
+	('1wks2', 'Sistema de Banco de Dados', 'Pearson');
 
 insert into UNIDADE_BIBLIOTECA values
 	('ae3', 'Biblioteca Setorial', 'Prox ao CEGOE'),
-	('fa4', 'Biblioteca Centrao', 'Prox à Reitoria');
+	('fa4', 'Sede_UFRPE', 'Prox à Reitoria');
 
 insert into LIVRO_AUTOR values
 	('09xe3', 'José de Alencar'),
@@ -99,3 +99,44 @@ insert into LIVRO_EMPRESTIMO values
 	('1wks2', 'fa4', '01234567890', '2020-09-16', '2020-09-30'),
 	('09xe3', 'ae3', '96325874101', '2020-09-16', '2020-09-30'),
 	('er342', 'fa4', '01234567890', '2020-09-16', '2020-09-30');
+
+
+
+-- CONSULTAS --
+
+-- I --
+SELECT * FROM LIVRO WHERE Nome_editora == 'Pearson';
+
+-- II --
+SELECT Titulo, Nome_autor FROM LIVRO INNER JOIN LIVRO_AUTOR ON LIVRO.Cod_livro=LIVRO_AUTOR.Cod_livro;
+
+-- III --
+SELECT 
+	LIVRO_COPIAS.Qt_copia 
+FROM 
+	LIVRO_COPIAS 
+	INNER JOIN LIVRO ON LIVRO.Cod_livro=LIVRO_COPIAS.Cod_livro
+	INNER JOIN UNIDADE_BIBLIOTECA ON LIVRO_COPIAS.Cod_unidade=UNIDADE_BIBLIOTECA.Cod_unidade
+WHERE
+	UNIDADE_BIBLIOTECA.Nome_unidade="Sede_UFRPE";
+
+-- IV --
+SELECT
+	LIVRO.Titulo
+FROM
+	LIVRO INNER JOIN LIVRO_EMPRESTIMO ON LIVRO.Cod_livro=LIVRO_EMPRESTIMO.Cod_livro
+WHERE
+	LIVRO_EMPRESTIMO.Data_emprestimo BETWEEN '2020-08-01' AND '2020-09-01';
+
+-- V --
+SELECT 
+	USUARIO.Nome,UNIDADE_BIBLIOTECA.Nome_unidade
+FROM
+	USUARIO 
+	INNER JOIN LIVRO_EMPRESTIMO ON USUARIO.Nmr_cartao=LIVRO_EMPRESTIMO.Nmr_cartao
+	INNER JOIN UNIDADE_BIBLIOTECA ON LIVRO_EMPRESTIMO.Cod_unidade=UNIDADE_BIBLIOTECA.Cod_unidade
+	INNER JOIN LIVRO ON LIVRO_EMPRESTIMO.Cod_livro=LIVRO.Cod_livro
+WHERE 
+	USUARIO.Nome LIKE 'A%';
+
+-- VI --
