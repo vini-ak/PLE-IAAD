@@ -96,7 +96,7 @@ insert into LIVRO_COPIAS values
 	('1wks2', 'fa4', 3);
 
 insert into LIVRO_EMPRESTIMO values
-	('1wks2', 'fa4', '01234567890', '2020-09-16', '2020-09-30'),
+	('1wks2', 'fa4', '01234567890', '2020-08-16', '2020-09-30'),
 	('09xe3', 'ae3', '96325874101', '2020-09-16', '2020-09-30'),
 	('er342', 'fa4', '01234567890', '2020-09-16', '2020-09-30');
 
@@ -105,7 +105,7 @@ insert into LIVRO_EMPRESTIMO values
 -- CONSULTAS --
 
 -- I --
-SELECT * FROM LIVRO WHERE Nome_editora == 'Pearson';
+SELECT LIVRO.Titulo, LIVRO.Nome_editora FROM LIVRO WHERE Nome_editora = 'Pearson';
 
 -- II --
 SELECT Titulo, Nome_autor FROM LIVRO INNER JOIN LIVRO_AUTOR ON LIVRO.Cod_livro=LIVRO_AUTOR.Cod_livro;
@@ -118,7 +118,8 @@ FROM
 	INNER JOIN LIVRO ON LIVRO.Cod_livro=LIVRO_COPIAS.Cod_livro
 	INNER JOIN UNIDADE_BIBLIOTECA ON LIVRO_COPIAS.Cod_unidade=UNIDADE_BIBLIOTECA.Cod_unidade
 WHERE
-	UNIDADE_BIBLIOTECA.Nome_unidade="Sede_UFRPE";
+	UNIDADE_BIBLIOTECA.Nome_unidade='Sede_UFRPE' AND
+	LIVRO.Titulo='Sistema de Banco de Dados';
 
 -- IV --
 SELECT
@@ -130,7 +131,7 @@ WHERE
 
 -- V --
 SELECT 
-	USUARIO.Nome,UNIDADE_BIBLIOTECA.Nome_unidade
+	USUARIO.Nome,UNIDADE_BIBLIOTECA.Nome_unidade, LIVRO.Titulo
 FROM
 	USUARIO 
 	INNER JOIN LIVRO_EMPRESTIMO ON USUARIO.Nmr_cartao=LIVRO_EMPRESTIMO.Nmr_cartao
