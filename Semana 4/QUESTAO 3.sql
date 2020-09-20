@@ -71,3 +71,11 @@ WHERE
 
 
 -- h --
+UPDATE
+	FUNCIONARIO
+SET
+	Cpf_supervisor='94377554355'
+WHERE
+	Cpf='99988777767';
+-- Nao é possivel executar a operação pois este cpf_supervisor não possui valor correspondente a Cpf em FUNCIONARIO.
+-- Viola a integridade referencial.
