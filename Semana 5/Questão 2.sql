@@ -69,3 +69,63 @@ ALTER TABLE Programador ADD FOREIGN KEY(id_startup) REFERENCES Startup(id_startu
 ALTER TABLE Programador_Linguagem ADD FOREIGN KEY(id_programador) REFERENCES Programador(id_programador);
 ALTER TABLE Programador_Linguagem ADD FOREIGN KEY(id_linguagem) REFERENCES Linguagem_Programacao(id_linguagem);
 COMMIT;
+
+
+
+-- I --
+
+--			CLAUSULA WHERE				--
+SELECT nome_programador, nome_startup
+FROM Programador as p, Startup as s 
+WHERE p.id_startup = s.id_startup;
+
+
+--			INNER JOIN					--
+SELECT p.nome_programador, s.nome_startup
+FROM Programador as p JOIN Startup as s 
+USING (id_startup);
+
+
+--			junção natural				--
+SELECT nome_programador, nome_startup
+FROM Programador NATURAL JOIN Startup;
+
+
+
+--	II 	--
+SELECT nome_programador, linguagem
+FROM Programador 
+	RIGHT JOIN Programador_Linguagem USING(id_programador)
+	NATURAL JOIN Linguagem_Programacao;
+
+
+
+--	III  --
+SELECT nome_programador, linguagem
+FROM Programador 
+	LEFT JOIN Programador_Linguagem USING(id_programador)
+	LEFT JOIN Linguagem_Programacao USING(id_linguagem);
+
+
+-- IV --
+SELECT nome_programador
+FROM Programador 
+WHERE id_programador NOT IN (
+	SELECT id_programador
+	FROM Programador_Linguagem
+);
+
+
+-- V --
+SELECT nome_startup, nome_programador
+FROM Startup LEFT JOIN Programador USING(id_startup);
+
+
+-- VI --
+SELECT nome_startup
+FROM Startup as s
+WHERE not exists (
+		SELECT nome_programador
+		FROM Programador as p
+		WHERE p.id_startup = s.id_startup
+	  );
