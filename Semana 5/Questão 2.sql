@@ -1,5 +1,6 @@
 BEGIN;
 
+-- a --
 -- CRIANDO BANCO --
 create schema if not exists BD_Startup;
 use BD_Startup;
@@ -72,6 +73,8 @@ COMMIT;
 
 
 
+-- 	b 	--
+
 -- I --
 
 --			CLAUSULA WHERE				--
@@ -129,3 +132,18 @@ WHERE not exists (
 		FROM Programador as p
 		WHERE p.id_startup = s.id_startup
 	  );
+
+
+
+-- 	c 	--
+-- 		full outer join 	--
+SELECT id_startup, nome_programador, id_linguagem
+FROM Programador as p LEFT JOIN Programador_Linguagem as pl
+USING(id_programador)
+UNION ALL
+SELECT id_startup, nome_programador, id_linguagem
+FROM Programador as p RIGHT JOIN Programador_Linguagem as pl
+USING(id_programador)
+WHERE p.id_programador IS NULL;
+
+-- Este relatório mostra o id da startup na qual o funcionário trabalha, o nome do funcionário e o id da linguagem que ele programa. Nos campos onde aparece null, é porque ele não programa em uma das linguagens cadastradas no sistema.
