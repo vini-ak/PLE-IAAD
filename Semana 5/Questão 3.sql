@@ -75,3 +75,88 @@ AS SELECT P.Projnome, D.Dnome, COUNT(T.Pnr), SUM(T.Horas)
    GROUP BY(P.Projnumero);
 
 -- j --
+
+-- CREATE VIEW Resumo_Departamento (Num_dept, Num_func, Total_sal, Media_sal)
+-- AS SELECT Dnr, COUNT(*), SUM(Salario), AVG(Salario)
+-- FROM FUNCIONARIO
+-- GROUP BY Dnr;
+
+
+
+-- 			PRIMEIRA INSTRUÇÃO:		--
+
+-- SELECT * FROM Resumo_Departamento;
+
+-- Equivale a: --
+SELECT Dnr, COUNT(*), SUM(Salario), AVG(Salario) 
+FROM FUNCIONARIO 
+GROUP BY(Dnr);
+
+
+-- 			SEGUNDA INSTRUÇÃO:  		--
+
+--SELECT Num_dept, Num_func
+--FROM Resumo_Departamento
+--WHERE Total_sal > 100000;
+
+-- Equivale a: --
+SELECT Dnr, COUNT(*)
+FROM FUNCIONARIO
+GROUP BY(Dnr)
+HAVING SUM(Salario) > 100000;
+
+
+-- 			TERCEIRA INSTRUÇÃO 			--
+
+-- SELECT Num_dept, Media_sal
+-- FROM Resumo_Departamento
+-- WHERE Num_func > ( SELECT Num_func 
+-- 					  FROM Resumo_Departamento
+-- 					  WHERE Num_dept=4);
+
+
+-- Equivale a:
+SELECT Dnr, AVG(Salario)
+FROM FUNCIONARIO
+GROUP BY(Dnr)
+HAVING COUNT(*) > (
+					SELECT COUNT(*)
+					FROM FUNCIONARIO
+					WHERE Dnr = 4
+					);
+
+
+-- k --
+-- As Views, como o próprio nome sugere, são limitadas a fazer operações de consulta. Por não ser persistida no banco de dados, não seria possível fazer alteração nos seus dados. 
+
+
+-- L --
+
+
+-- M --
+
+-- Remover todas as referências de um funcionário do sistema depois que ele for deletado da tabela FUNCIONARIO.
+-- A ideia da trigger abaixo é deletar as rows de outras tabelas onde o Cpf de um funcionario é uma chave primária
+-- e atualizar nas referências onde o Cpf é uma chave estrangeira.  
+
+-- Contudo a trigger dará um erro por conta do UPDATE em FUNCIONARIO, uma vez que a tabela estaria se auto referenciando
+-- Busquei formas de resolver esse problema, mas infelizmente não consegui :/
+DELIMITER $
+CREATE TRIGGER REMOVER_FUNCIONARIO BEFORE DELETE 
+ON FUNCIONARIO
+FOR EACH ROW
+BEGIN 
+	DELETE FROM DEPENDENTE WHERE FCpf = OLD.Cpf ;
+	DELETE FROM TRABALHA_EM WHERE FCpf = OLD.Cpf;
+    UPDATE DEPARTAMENTO SET Cpf_gerente = NULL WHERE Cpf_gerente = OLD.Cpf;
+    UPDATE FUNCIONARIO AS S SET S.Cpf_supervisor = null WHERE Cpf_supervisor = OLD.Cpf ;
+END$ 
+DELIMITER ;
+
+SELECT * FROM DEPENDENTE WHERE FCpf = '88866555576';
+SELECT * FROM TRABALHA_EM WHERE FCpf = '88866555576';
+
+DELETE FROM FUNCIONARIO WHERE Cpf = '88866555576';
+
+SELECT * FROM DEPENDENTE WHERE FCpf = '88866555576';
+SELECT * FROM TRABALHA_EM WHERE FCpf = '88866555576';
